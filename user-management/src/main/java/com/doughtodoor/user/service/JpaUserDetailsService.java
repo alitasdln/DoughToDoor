@@ -44,15 +44,17 @@ public class JpaUserDetailsService implements UserDetailsService {
 
     @Transactional
     public User registerUser(User newUser) {
-        // Encode the user's password
+
+        Optional<User> existingUser = userRepository.findByUsername(newUser.getUsername());
+
+        if (existingUser != null) {
+            throw new UserAlreadyExistsException("Username already exists.");
+        }
+
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
-        // Query for the "ROLE_CUSTOMER" role by name
-        Optional<UserRole> customerRoleOptional = userRoleRepository.findByName("ROLE_CUSTOMER");
-
-        // If the role doesn't exist, you can handle it appropriately (e.g., throw an exception)
-        UserRole customerRole = customerRoleOptional.orElseThrow(() -> new RuntimeException("ROLE_CUSTOMER does not exist"));
-
+        UserRole customerRole = userRoleRepository.findByName("ROLE_CUSTOMER")
+                .orElseThrow(() -> new RuntimeException("ROLE_CUSTOMER does not exist"));
         // Set the user's roles
         newUser.setRoles(Collections.singleton(customerRole));
 
