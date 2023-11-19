@@ -6,7 +6,9 @@ import com.doughtodoor.ordermanagement.model.OrderItem;
 import com.doughtodoor.ordermanagement.model.OrderStatus;
 import com.doughtodoor.ordermanagement.repository.OrderRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -20,7 +22,7 @@ public class OrderService {
         return orderRepository.persist(order);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public Order getOrderById(Long orderId) {
         return orderRepository.getReferenceById(orderId);
     }
@@ -32,7 +34,7 @@ public class OrderService {
             orderToUpdate.setStatus(status);
             return orderRepository.update(orderToUpdate);
         } else {
-            throw new OrderNotFoundException("Order with id" + orderId + "was not found.");
+            throw new OrderNotFoundException(orderId);
         }
     }
 
@@ -47,20 +49,21 @@ public class OrderService {
             orderToAdd.getItems().add(item);
             return orderRepository.update(orderToAdd);
         } else {
-            throw new OrderNotFoundException("Order with id" + orderId + "was not found.");
+            throw new OrderNotFoundException(orderId);
         }
     }
 
-    public Order removeItemFromOrder(Long orderId, String itemId) {
+    public Order removeItemFromOrder(Long orderId, Long itemId) {
 
-        Order orderToRemove = getOrderById(orderId);
-        if (orderToRemove != null) {
-            orderToRemove.getItems().remove(orderToRemove);
-            return orderRepository.update(orderToRemove);
+        Order orderToRemoveItem = getOrderById(orderId);
+        if (orderToRemoveItem != null) {
+            orderToRemoveItem.getItems().removeIf(orderItem -> orderItem.getItemId().equals(itemId));
+            return orderRepository.update(orderToRemoveItem);
         }
         else {
-            throw new OrderNotFoundException("Order with id" + orderId + "was not found.");
+            throw new OrderNotFoundException(orderId);
         }
+
     }
 
 }

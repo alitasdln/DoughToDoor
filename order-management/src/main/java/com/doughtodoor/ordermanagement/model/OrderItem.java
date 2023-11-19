@@ -19,4 +19,8 @@ public class OrderItem {
         this.quantity = quantity;
         this.price = price;
     }
+
+    public Long getItemId() {
+        return itemId;
+    }
 }
