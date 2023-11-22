@@ -8,6 +8,11 @@ spring.jpa:
   hibernate:
     ddl-auto: update
 
-# Drop and re-create the schema for development/testing (not recommended for production)
+spring:
+  application:
+    name: user-management
+
+
+
 management.endpoints.web.exposure.include: health
 

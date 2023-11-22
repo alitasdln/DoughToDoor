@@ -5,5 +5,14 @@ spring.jpa:
   hibernate:
     ddl-auto: update
 
-# Drop and re-create the schema for development/testing (not recommended for production)
+spring:
+  application:
+    name: order-management
+  config:
+    import=optional:configserver: http://localhost:8888
+
+server:
+  port: 8088 #8080 is user-management
+
+
 management.endpoints.web.exposure.include: health
