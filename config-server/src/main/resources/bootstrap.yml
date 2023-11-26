@@ -1,0 +1,20 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+
+  profiles:
+    active: native
+
+  cloud:
+    config:
+      #uri: http://localhost:8888
+      server:
+        bootstrap: true
+        native:
+          search-locations: classpath:/config/
+    inetutils:
+      preferred-networks:
+        - Ethernet
