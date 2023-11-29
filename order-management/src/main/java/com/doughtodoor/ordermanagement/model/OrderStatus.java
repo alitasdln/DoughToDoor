@@ -1,8 +1,9 @@
 package com.doughtodoor.ordermanagement.model;
 
 public enum OrderStatus {
-    PLACED,
+    PENDING,
     PROCESSING,
-    COMPLETED,
+    SHIPPED,
+    DELIVERED,
     CANCELLED
 }

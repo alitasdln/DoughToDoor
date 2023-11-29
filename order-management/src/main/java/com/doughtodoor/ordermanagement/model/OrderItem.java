@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class OrderItem {
+
     @Id
     private Long itemId;
     private String itemName;
@@ -11,8 +12,12 @@ public class OrderItem {
     private double price;
 
     @ManyToOne
+    @JoinColumn(name = "parent_order_id")
     private Order order;
 
+    public OrderItem () {
+
+    }
     public OrderItem(Long itemId, String itemName, int quantity, double price) {
         this.itemId = itemId;
         this.itemName = itemName;
@@ -22,5 +27,25 @@ public class OrderItem {
 
     public Long getItemId() {
         return itemId;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

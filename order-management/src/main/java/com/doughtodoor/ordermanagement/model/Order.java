@@ -2,6 +2,7 @@ package com.doughtodoor.ordermanagement.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "`order`")
@@ -12,12 +13,15 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderItem> items;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    public Order() {
+        this.items = new ArrayList<>();
+    }
     public Order(Long orderId, List<OrderItem> items, OrderStatus status) {
         this.orderId = orderId;
         this.items = items;

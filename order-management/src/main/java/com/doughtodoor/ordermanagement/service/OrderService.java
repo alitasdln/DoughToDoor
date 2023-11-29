@@ -5,8 +5,12 @@ import com.doughtodoor.ordermanagement.model.Order;
 import com.doughtodoor.ordermanagement.model.OrderItem;
 import com.doughtodoor.ordermanagement.model.OrderStatus;
 import com.doughtodoor.ordermanagement.repository.OrderRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -18,9 +22,32 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order createOrder(Order order) {
-        return orderRepository.persist(order);
+    public Order createOrder(Order newOrder) {
+
+        List<OrderItem> items = newOrder.getItems();
+        newOrder.setItems(null); // Reset items temporarily
+
+        Order savedOrder = orderRepository.merge(newOrder); // Save the order first
+
+        List<OrderItem> newItems = new ArrayList<>();
+
+        for (OrderItem item : items) {
+            OrderItem newItem = new OrderItem(
+                    item.getItemId(),
+                    item.getItemName(),
+                    item.getQuantity(),
+                    item.getPrice()
+            );
+            newItem.setOrder(savedOrder); // Set the reference to the new order
+            newItems.add(newItem);
+        }
+
+        savedOrder.setItems(newItems); // Set the new items in the order
+
+        // Update the order in the repository with new items
+        return orderRepository.update(savedOrder);
     }
+
 
     //@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public Order getOrderById(Long orderId) {
@@ -46,6 +73,7 @@ public class OrderService {
 
         Order orderToAdd = getOrderById(orderId);
         if (orderToAdd != null) {
+            item.setOrder(orderToAdd);
             orderToAdd.getItems().add(item);
             return orderRepository.update(orderToAdd);
         } else {
