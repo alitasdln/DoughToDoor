@@ -1,4 +1,4 @@
-package com.doughtodoor.apigateway;
+package com.doughtdoor.apigateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
