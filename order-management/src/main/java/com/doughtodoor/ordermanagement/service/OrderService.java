@@ -5,9 +5,9 @@ import com.doughtodoor.ordermanagement.model.Order;
 import com.doughtodoor.ordermanagement.model.OrderItem;
 import com.doughtodoor.ordermanagement.model.OrderStatus;
 import com.doughtodoor.ordermanagement.repository.OrderRepository;
-import org.aspectj.weaver.ast.Or;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +22,13 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional
     public Order createOrder(Order newOrder) {
 
         List<OrderItem> items = newOrder.getItems();
         newOrder.setItems(null); // Reset items temporarily
 
-        Order savedOrder = orderRepository.merge(newOrder); // Save the order first
+        Order savedOrder = orderRepository.merge(newOrder);
 
         List<OrderItem> newItems = new ArrayList<>();
 

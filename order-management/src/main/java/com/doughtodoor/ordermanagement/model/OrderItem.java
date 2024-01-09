@@ -1,5 +1,6 @@
 package com.doughtodoor.ordermanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "parent_order_id")
+    @JsonIgnore
     private Order order;
 
     public OrderItem () {

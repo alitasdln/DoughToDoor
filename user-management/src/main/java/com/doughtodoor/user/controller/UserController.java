@@ -14,7 +14,6 @@ public class UserController {
 
     private final JpaUserDetailsService jpaUserDetailsService;
 
-
     public UserController(JpaUserDetailsService jpaUserDetailsService) {
         this.jpaUserDetailsService = jpaUserDetailsService;
     }
@@ -30,16 +29,15 @@ public class UserController {
         return jpaUserDetailsService.registerUser(newUser);
     }
 
-    //@PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/users")
     public User getUserById(@RequestParam("id") Long userId) {
         return jpaUserDetailsService.getUserById(userId);
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public List<User> listAllUsers() {
         return jpaUserDetailsService.getAllUsers();
     }
-
 }

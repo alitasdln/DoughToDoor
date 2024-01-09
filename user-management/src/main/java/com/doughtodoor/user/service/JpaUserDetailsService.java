@@ -36,20 +36,27 @@ public class JpaUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository
-                .findByUsername(username)
-                .map(User::new)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
-    }
+        System.out.println("Attempting to load user by username: " + username);
 
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            System.out.println("User found: " + user.getUsername());
+            return new User(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles());
+
+        } else {
+            System.out.println("Username not found: " + username);
+            throw new UsernameNotFoundException("Username not found: " + username);
+        }
+    }
     @Transactional
     public User registerUser(User newUser) {
 
-        Optional<User> existingUser = userRepository.findByUsername(newUser.getUsername());
-
-        if (existingUser != null) {
-            throw new UserAlreadyExistsException("Username already exists.");
-        }
+        userRepository.findByUsername(newUser.getUsername())
+                .ifPresent(existingUser -> {
+                    throw new UserAlreadyExistsException("Username already exists.");
+                });
 
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
@@ -58,7 +65,6 @@ public class JpaUserDetailsService implements UserDetailsService {
         // Set the user's roles
         newUser.setRoles(Collections.singleton(customerRole));
 
-        // Save the user to the database
         return userRepository.save(newUser);
     }
 

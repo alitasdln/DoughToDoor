@@ -37,8 +37,23 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(User user) {
+    //I think code quality is bad here.
+    //    public User(User user) {
+    //        this.id = user.getId();
+    //        this.username = user.getUsername();
+    //        this.password = user.getPassword();
+    //        this.roles =  user.roles;
+    //        this.email = user.getEmail();
+    //    }
+
+    public User(Long id, String username, String password, String email, Set<UserRole> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
     }
+
 
 
     public Long getId() {
@@ -102,5 +117,9 @@ public class User implements UserDetails {
 
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
+    }
+
+    public Set<UserRole> getRoles() {
+        return roles;
     }
 }

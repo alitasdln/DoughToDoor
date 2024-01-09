@@ -23,16 +23,34 @@ public class SecurityConfig {
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(auth -> {
 
-//                        auth.requestMatchers("/").permitAll();
-//                        auth.requestMatchers("/users/register").permitAll();
-//                        auth.requestMatchers("/actuator/**").permitAll();
-                        auth.anyRequest().permitAll(); //to be changed to .authenticated()
+                        auth.requestMatchers("/").permitAll();
+                        auth.requestMatchers("/users/register").permitAll();
+                        auth.requestMatchers("/actuator/**").permitAll();
+                            auth.anyRequest().authenticated();
                         }
                 )
+                .formLogin(withDefaults())
                 .httpBasic(withDefaults())
                 .build();
 
     }
+//
+//    @Bean
+//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        return http
+//                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+//                .authorizeHttpRequests(auth -> {
+//
+////                        auth.requestMatchers("/").permitAll();
+////                        auth.requestMatchers("/users/register").permitAll();
+////                        auth.requestMatchers("/actuator/**").permitAll();
+//                        auth.anyRequest().permitAll(); //to be changed to .authenticated()
+//                        }
+//                )
+//                .httpBasic(withDefaults())
+//                .build();
+//
+//    }
 
 
     @Bean

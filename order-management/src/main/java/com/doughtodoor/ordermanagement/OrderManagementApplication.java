@@ -10,9 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         basePackages = "com.doughtodoor.ordermanagement.repository",
         repositoryBaseClass = BaseJpaRepositoryImpl.class
 )
-
 public class OrderManagementApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(OrderManagementApplication.class, args);
     }

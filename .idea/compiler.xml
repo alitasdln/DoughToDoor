@@ -14,6 +14,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="api-gateway.main" target="17" />
+      <module name="api-gateway.test" target="17" />
       <module name="config-server.main" target="17" />
       <module name="config-server.test" target="17" />
     </bytecodeTargetLevel>
