@@ -1,1 +1,19 @@
 
+spring:
+  application:
+    name: api-gateway
+  config:
+      import=optional:configserver: http://localhost:8888
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+server:
+  port: 4321
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
