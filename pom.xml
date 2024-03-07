@@ -20,6 +20,7 @@
     <modules>
         <module>user-management</module>
         <module>order-management</module>
+        <module>notification-service</module>
         <module>service-discovery</module>
         <module>config-server</module>
         <module>api-gateway</module>
@@ -50,6 +51,21 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
