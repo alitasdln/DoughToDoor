@@ -10,10 +10,11 @@ public class NotificationResponse {
     }
 
     public boolean isSuccess() {
-        return false;
+        return success;
     }
 
     public Object getErrorMessage() {
-        return null;
+        return errorMessage;
     }
 }
+
