@@ -1,6 +1,6 @@
 package com.doughtodoor.notification.service;
 
-import com.doughtodoor.notification.exception.NotificatDoesntExistException;
+import com.doughtodoor.notification.exception.NotificationDoesntExistException;
 import com.doughtodoor.notification.model.Notification;
 import com.doughtodoor.notification.model.NotificationRequest;
 import com.doughtodoor.notification.model.NotificationResponse;
@@ -14,15 +14,17 @@ import java.util.Optional;
 @Service
 public class NotificationService {
 
+    private static final String NOTIFICATION_TOPIC = "notification_topic";
     private final NotificationRepository notificationRepository;
     private final KafkaTemplate<String, NotificationRequest> kafkaTemplate;
-    private static final String NOTIFICATION_TOPIC = "notification_topic";
-
-    public NotificationService(NotificationRepository notificationRepository, KafkaTemplate<String, NotificationRequest> kafkaTemplate) {
+    private final EmailService emailService;
+    
+    public NotificationService(NotificationRepository notificationRepository, KafkaTemplate<String, NotificationRequest> kafkaTemplate, EmailService emailService) {
         this.notificationRepository = notificationRepository;
         this.kafkaTemplate = kafkaTemplate;
+        this.emailService = emailService;
     }
-
+    
     public NotificationResponse sendNotification(NotificationRequest request) {
         Notification notification = new Notification(request.getRecipient(), request.getMessage(), request.getType());
 
@@ -65,6 +67,7 @@ public class NotificationService {
     }
 
     private void sendEmailNotification(NotificationRequest request) {
+        emailService.sendEmail(request, "Notification", true);
     }
 
     public Optional<Notification> getNotificationById(Long id) {
