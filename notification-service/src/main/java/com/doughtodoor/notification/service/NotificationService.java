@@ -1,6 +1,5 @@
 package com.doughtodoor.notification.service;
 
-import com.doughtodoor.notification.exception.NotificationDoesntExistException;
 import com.doughtodoor.notification.model.Notification;
 import com.doughtodoor.notification.model.NotificationRequest;
 import com.doughtodoor.notification.model.NotificationResponse;
@@ -18,11 +17,13 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final KafkaTemplate<String, NotificationRequest> kafkaTemplate;
     private final EmailService emailService;
+    private final PushNotificationService pushNotificationService;
     
-    public NotificationService(NotificationRepository notificationRepository, KafkaTemplate<String, NotificationRequest> kafkaTemplate, EmailService emailService) {
+    public NotificationService(NotificationRepository notificationRepository, KafkaTemplate<String, NotificationRequest> kafkaTemplate, EmailService emailService, PushNotificationService pushNotificationService) {
         this.notificationRepository = notificationRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.emailService = emailService;
+        this.pushNotificationService = pushNotificationService;
     }
     
     public NotificationResponse sendNotification(NotificationRequest request) {
@@ -61,6 +62,7 @@ public class NotificationService {
     }
 
     private void sendPushNotification(NotificationRequest request) {
+        pushNotificationService.sendPushNotification(request);
     }
 
     private void sendSMSNotification(NotificationRequest request) {
