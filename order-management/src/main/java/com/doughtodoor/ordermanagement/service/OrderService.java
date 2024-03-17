@@ -1,25 +1,35 @@
 package com.doughtodoor.ordermanagement.service;
 
+import com.doughtodoor.ordermanagement.client.UserClient;
+import com.doughtodoor.ordermanagement.dto.UserDTO;
 import com.doughtodoor.ordermanagement.exception.OrderNotFoundException;
 import com.doughtodoor.ordermanagement.model.Order;
+import com.doughtodoor.ordermanagement.model.OrderEvent;
 import com.doughtodoor.ordermanagement.model.OrderItem;
 import com.doughtodoor.ordermanagement.model.OrderStatus;
 import com.doughtodoor.ordermanagement.repository.OrderRepository;
 //import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final UserClient userClient;
 
-
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository,
+                        KafkaTemplate<String,String> kafkaTemplate,
+                        UserClient userClient) {
         this.orderRepository = orderRepository;
+        this.kafkaTemplate = kafkaTemplate;
+        this.userClient = userClient;
     }
 
     @Transactional
@@ -44,6 +54,15 @@ public class OrderService {
         }
 
         savedOrder.setItems(newItems); // Set the new items in the order
+
+        UserDTO user = userClient.getUserDetails(newOrder.getUserId());
+        String customerEmail = user.getEmail();
+
+        OrderEvent orderEvent = new OrderEvent();
+        orderEvent.setOrderId(newOrder.getOrderId());
+        orderEvent.setCustomerEmail(customerEmail);
+        orderEvent.setOrderStatus(OrderStatus.PENDING);
+        kafkaTemplate.send("order-status-updates", orderEvent.toString());
 
         // Update the order in the repository with new items
         return orderRepository.update(savedOrder);
